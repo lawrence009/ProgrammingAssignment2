@@ -11,9 +11,17 @@ makeCacheMatrix <- function(x = matrix()) {
     # computes the inverse of the special "matrix" returned by makeCacheMatrix
     # If the inverse has already been calculated (and the matrix has not changed),
     # then retrieve the inverse from the cache
-    cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
-        ginv(x)
+    cacheSolve <- function(y, ...) {
+        ## Return a matrix that is the inverse of 'y' via Moore-Penrose
+        ## generalized inverse
+
+        if(all(y == x) & !is.null(m)) {
+            print('use cached')
+            m
+        } else {
+            print('new calc')
+            ginv(y)
+        }
     }
 
 
@@ -38,9 +46,9 @@ makeCacheMatrix <- function(x = matrix()) {
     }
 
 
+    #initializes
     if(is.matrix(x)) {
-        print('Well done, my young Padawan.')
-        print('I shall create the required matrix.')
+        print('Well done, my young Padawan. I shall create the required matrix.')
         set(x)
     } else {
         stop('Sorry, Neo. I require a matrix.')
