@@ -8,6 +8,11 @@ m <- makeCacheMatrix(m1)
 print(m$get())
 print(m$getInverse())
 
+#should not re-calc
+m$set(m2)
+print(m$get())
+print(m$getInverse())
+
 #should re-calc
 m$set(m3)
 print(m$get())
@@ -22,3 +27,12 @@ print(m$getInverse())
 m$set(m1)
 print(m$get())
 print(m$getInverse())
+
+#should not re-calc
+m$setInverse(m$getInverse())
+print(m$getInverse())
+
+#should re-calc
+m$setInverse(m1)
+print(m$getInverse())
+

@@ -10,24 +10,32 @@ makeCacheMatrix <- function(x = matrix()) {
 
 
     # computes the inverse of the special "matrix" returned by makeCacheMatrix
-    # If the inverse has already been calculated (and the matrix has not changed),
-    # then retrieve the inverse from the cache
-    cacheSolve <- function(y, ...) {
-        ## Return a matrix that is the inverse of 'y' via Moore-Penrose
+    # If the inverse has not been calculated (or the matrix has changed),
+    # then calculate and cache the inverse
+    cacheSolve <- function(y = x, inv = m, ...) {
+        ## Cache a matrix that is the inverse of 'y' via Moore-Penrose
         ## generalized inverse
 
-        if(is.null(m) |!identical(y, x)) {
-            print('calc new inverse')
+        #can this if, else if be simplifed?
+        if(is.null(inv)) {
+            print('init inverse')
             m <<- ginv(y)
+        } else if(!identical(y, x)) {
+            print('matrix changed; calc new inverse')
+            x <<- y
+            m <<- ginv(y)
+        } else if(!identical(inv, m)) {
+            print('inverse changed; calc new inverse')
+            x <<- ginv(inv)
+            m <<- inv
         }
+
     }
 
 
     #set or change the matrix
     set <- function(y) {
         cacheSolve(y, m)
-        x <<- y
-
     }
 
 
@@ -36,7 +44,10 @@ makeCacheMatrix <- function(x = matrix()) {
         x
     }
 
-    #setInverse <- function(matrix) {}
+    #set the inverset of the matrix
+    setInverse <- function(y) {
+        cacheSolve(x, y)
+    }
 
     #get the inverset of the matrix
     getInverse <- function() {
@@ -55,6 +66,6 @@ makeCacheMatrix <- function(x = matrix()) {
 
     list(set = set,
          get = get,
-#         setInverse = setInverse,
+         setInverse = setInverse,
          getInverse = getInverse)
 }
