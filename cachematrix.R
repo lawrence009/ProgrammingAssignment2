@@ -4,6 +4,7 @@ library(MASS)
 
 # creates a special "matrix" object that can cache its inverse
 makeCacheMatrix <- function(x = matrix()) {
+    # x is the matrix
     # m is the inverse matrix of x
     m <- NULL
 
@@ -15,32 +16,29 @@ makeCacheMatrix <- function(x = matrix()) {
         ## Return a matrix that is the inverse of 'y' via Moore-Penrose
         ## generalized inverse
 
-        if(all(y == x) & !is.null(m)) {
-            print('use cached')
-            m
-        } else {
-            print('new calc')
-            ginv(y)
+        if(is.null(m) |!identical(y, x)) {
+            print('calc new inverse')
+            m <<- ginv(y)
         }
     }
 
 
+    #set or change the matrix
     set <- function(y) {
+        cacheSolve(y, m)
         x <<- y
-        m <<- cacheSolve(y)
+
     }
 
 
+    #get the matrix
     get <- function() {
         x
     }
 
+    #setInverse <- function(matrix) {}
 
-    setInverse <- function(matrix) {
-        m <<- matrix
-    }
-
-
+    #get the inverset of the matrix
     getInverse <- function() {
         m
     }
@@ -48,15 +46,15 @@ makeCacheMatrix <- function(x = matrix()) {
 
     #initializes
     if(is.matrix(x)) {
-        print('Well done, my young Padawan. I shall create the required matrix.')
+        print('Well done, Neo. I shall create the required matrix.')
         set(x)
     } else {
-        stop('Sorry, Neo. I require a matrix.')
+        stop('Sorry, Neo. I require a matrix to proceed')
     }
 
 
     list(set = set,
          get = get,
-         setInverse = setInverse,
+#         setInverse = setInverse,
          getInverse = getInverse)
 }
